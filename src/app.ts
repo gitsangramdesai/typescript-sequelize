@@ -4,6 +4,9 @@ import express, { RequestHandler, ErrorRequestHandler  } from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import passport from 'passport';
+import './auth/auth'
+import { User } from './models';
 
 import indexRouter from './routes/index';
 import usersRouter from './routes/users';
@@ -28,6 +31,16 @@ class App {
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(cookieParser());
     this.app.use(express.static(path.join(__dirname, 'public')));
+
+    this.app.use(passport.initialize());//initializes passport configuration  
+
+    passport.serializeUser(function(user, done) {
+      done(null, user as User);
+    });
+
+    passport.deserializeUser(function(user, done) {
+      done(null, user as User);
+    });
   }
 
   private routerSetup() {
